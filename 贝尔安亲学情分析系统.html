@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>            
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>贝尔安亲作业反馈系统</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: #f5f7fa;
+            padding: 15px;
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .step h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            font-family: "Consolas", monospace;
+            margin-bottom: 10px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        
+        .btn:active {
+            background: #2980b9;
+            transform: scale(0.98);
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+        }
+        
+        .btn-success:active {
+            background: #27ae60;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .info-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .info-item input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 44px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .result-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 180px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 16px;
+            margin-top: 15px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .comments-section {
+            margin: 15px 0;
+        }
+        
+        .comment-category {
+            margin-bottom: 15px;
+        }
+        
+        .comment-category h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .comment-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .comment-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            min-height: 44px;
+        }
+        
+        .comment-checkbox:active {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+        }
+        
+        .comment-checkbox input {
+            width: 20px;
+            height: 20px;
+            accent-color: #3498db;
+            flex-shrink: 0;
+        }
+        
+        .comment-checkbox label {
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .subject-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+            font-size: 14px;
+        }
+        
+        .hint {
+            background: #e8f4fc;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        
+        .error {
+            background: #ffeaea;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .comment-checkboxes {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .step h3 {
+                font-size: 18px;
+            }
+            
+            textarea {
+                font-size: 16px;
+                min-height: 120px;
+            }
+            
+            .info-item input {
+                font-size: 16px;
+            }
+            
+            .result-box {
+                font-size: 15px;
+            }
+        }
+        
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loading.active {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div>解析中...</div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>贝尔安亲作业反馈系统</h1>
+            <!-- 已移除"智能解析扫描全能王格式"标注 -->
+        </div>
+        
+        <div class="step">
+            <h3>📋 第一步：粘贴扫描文本</h3>
+            <textarea id="ocrText">贝尔安亲作业任务单
+开始今天的任务闯关吧！
+学生姓名：
+日期：
+辅导老师：
+牛渲儿
+2026/01/15
+小高老师
+错题原因参考模板
+数学
+语文
+英语
+1．计算粗心
+1．生字写错
+1．单词拼写错误
+2．概念理解不清
+2．拼音错误
+2．语法错误
+3．公式记错
+3．阅读理解偏差
+3．时态混淆
+4．审题不仔细
+4．作文跑题
+4．单复数错误
+5单位换算错误
+5课文背诵不熟
+5．大小写错误
+6．介词使用不当
+6．步骤不完整
+6．标点符号错
+科目
+作业任务内容
+预估时间
+实际时间
+完成情况
+错题数量
+错题原因
+数学
+大卷
+40
+50
+完成
+5
+1,2,4
+数学
+计算一页
+15
+20
+完成
+2
+1
+语文
+阅读理解一篇
+20
+25
+完成
+3
+3
+语文
+背诵课文11课1-2自然段
+15
+20
+完成
+
+5
+英语
+小卷正反面
+20
+20
+完成
+3
+5
+英语
+背诵课文10课
+15
+
+X
+
+
+纪律良好：
+5
+注意力集中：
+自己思考：
+不空太多题：
+完成快：
+20
+总分：
+25
+错题少：
+教师评语（请勾选适用项）：
+好的方面：
+需改进方面：
+□作业完成认真仔细
+□作业完成较马虎
+厂独立思考能力强
+注意力不集中
+□注意力集中，效率高
+需要多次提醒
+书写工整规范
+□遇到困难容易放弃
+□积极提问，善于思考
+□书写潦草不规范
+贝尔安亲托管中心 作业任务单</textarea>
+            
+            <div class="btn-group">
+                <button class="btn" id="parseBtn">🔍 智能解析</button>
+                <button class="btn" id="clearBtn">🗑️ 清空</button>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>👤 第二步：确认学生信息</h3>
+            <div class="student-info">
+                <div class="info-item">
+                    <label>学生姓名</label>
+                    <input type="text" id="studentName" placeholder="请手动输入" value="牛渲儿">
+                </div>
+                <div class="info-item">
+                    <label>日期</label>
+                    <input type="text" id="date" placeholder="自动设置为今日">
+                </div>
+                <div class="info-item">
+                    <label>辅导老师</label>
+                    <input type="text" id="teacherName" placeholder="请手动输入" value="小高老师">
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>📊 第三步：查看作业分析</h3>
+            
+            <div id="statsContainer">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalTasks">0</div>
+                        <div class="stat-label">总任务数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="completedTasks">0</div>
+                        <div class="stat-label">完成数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalErrors">0</div>
+                        <div class="stat-label">错题总数</div>
+                    </div>
+                </div>
+                
+                <h4>各科作业详情：</h4>
+                <div id="subjectList">
+                    <div class="hint">请先解析文本内容</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>✏️ 第四步：选择教师评语</h3>
+            
+            <div class="comments-section">
+                <div class="comment-category">
+                    <h4>✅ 好的方面：</h4>
+                    <div class="comment-checkboxes">
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="good" value="作业完成认真仔细"> 
+                            <span>作业完成认真仔细</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="good" value="独立思考和动手能力强">
+                            <span>独立思考和动手能力强</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="good" value="注意力集中，效率高">
+                            <span>注意力集中，效率高</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="good" value="书写工整规范">
+                            <span>书写工整规范</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="good" value="积极提问，善于思考">
+                            <span>积极提问，善于思考</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="comment-category">
+                    <h4>⚠️ 需改进方面：</h4>
+                    <div class="comment-checkboxes">
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="作业完成较马虎">
+                            <span>作业完成较马虎</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="注意力不集中">
+                            <span>注意力不集中</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="需要多次提醒">
+                            <span>需要多次提醒</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="遇到困难容易放弃">
+                            <span>遇到困难容易放弃</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="书写潦草不规范">
+                            <span>书写潦草不规范</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="学校数学新课知识掌握不佳，有待提高课堂效率">
+                            <span>学校数学新课知识掌握不佳，有待提高课堂效率</span>
+                        </label>
+                        <label class="comment-checkbox">
+                            <input type="checkbox" name="improve" value="课堂任务没有在校内完成，需要提高课堂效率">
+                            <span>课堂任务没有在校内完成，需要提高课堂效率</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <label>补充评语：</label>
+                    <input type="text" id="additionalComment" placeholder="可添加其他评语...">
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>📝 第五步：生成反馈</h3>
+            
+            <div class="btn-group">
+                <button class="btn btn-success" id="generateBtn">✨ 生成反馈内容</button>
+                <button class="btn" id="copyBtn">📋 复制内容</button>
+                <button class="btn" id="saveBtn">💾 保存文本</button>
+            </div>
+            
+            <div class="result-box" id="resultBox">
+                反馈内容将在这里显示...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 错题原因映射表
+        const errorReasons = {
+            '数学': {
+                '1': '计算粗心',
+                '2': '概念理解不清', 
+                '3': '公式记错',
+                '4': '审题不仔细',
+                '5': '单位换算错误',
+                '6': '步骤不完整'
+            },
+            '语文': {
+                '1': '生字写错',
+                '2': '拼音错误',
+                '3': '阅读理解偏差',
+                '4': '作文跑题',
+                '5': '课文背诵不熟',
+                '6': '标点符号错误'
+            },
+            '英语': {
+                '1': '单词拼写错误',
+                '2': '语法错误',
+                '3': '时态混淆',
+                '4': '单复数错误',
+                '5': '大小写错误',
+                '6': '介词使用不当'
+            },
+            '安亲作业': {
+                '1': '计算粗心',
+                '2': '概念理解不清',
+                '3': '审题不仔细',
+                '4': '步骤不完整'
+            }
+        };
+
+        // 全局变量存储解析后的作业数据
+        let parsedAssignments = [];
+        
+        // DOM元素引用
+        const parseBtn = document.getElementById('parseBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const loading = document.getElementById('loading');
+        
+        // 显示加载指示器
+        function showLoading() {
+            loading.classList.add('active');
+        }
+        
+        // 隐藏加载指示器
+        function hideLoading() {
+            loading.classList.remove('active');
+        }
+        
+        // 辅助函数：清理和标准化文本
+        function cleanAndNormalizeText(text) {
+            if (!text) return '';
+            
+            // 统一换行符为\n
+            text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            
+            // 处理移动设备可能出现的特殊空格
+            text = text.replace(/[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g, ' ');
+            
+            // 处理全角字符
+            text = text.replace(/，/g, ',').replace(/；/g, ';').replace(/：/g, ':');
+            
+            // 处理中文数字后面的点（如1．计算粗心）
+            text = text.replace(/(\d)．/g, '$1.');
+            
+            // 移除多余的空格，但保留换行
+            const lines = text.split('\n');
+            const cleanedLines = lines.map(line => {
+                // 移除行首尾空格
+                line = line.trim();
+                // 将多个连续空格合并为一个
+                line = line.replace(/\s+/g, ' ');
+                return line;
+            });
+            
+            return cleanedLines.join('\n');
+        }
+        
+        // 辅助函数：将错题原因字符串标准化
+        function normalizeErrorReasons(str) {
+            if (!str) return '';
+            let normalized = str.replace(/，/g, ',');
+            normalized = normalized.replace(/\s/g, '');
+            return normalized;
+        }
+        
+        // 辅助函数：检查字符串是否是错题原因格式
+        function isErrorReasonFormat(str) {
+            if (!str) return false;
+            const normalized = normalizeErrorReasons(str);
+            return normalized.includes(',') || /^[\d,]+$/.test(normalized);
+        }
+        
+        // 智能解析OCR文本 - 增强移动设备兼容性
+        function parseAssignmentsFromOCR(text) {
+            // 清理和标准化文本
+            text = cleanAndNormalizeText(text);
+            
+            // 按行分割
+            const lines = text.split('\n').map(line => line.trim());
+            const assignments = [];
+            
+            console.log('清理后的行数:', lines.length);
+            console.log('清理后的前20行:', lines.slice(0, 20));
+            
+            // 查找表格数据的开始位置（找到"科目"行）
+            let tableStartIndex = -1;
+            for (let i = 0; i < lines.length; i++) {
+                // 更灵活的匹配：包含"科目"关键词
+                if (lines[i].includes('科目') || lines[i] === '科目') {
+                    tableStartIndex = i;
+                    console.log('找到科目行，索引:', i, '内容:', lines[i]);
+                    break;
+                }
+            }
+            
+            if (tableStartIndex === -1) {
+                // 尝试更宽松的匹配
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].indexOf('科') >= 0 && lines[i].indexOf('目') >= 0) {
+                        tableStartIndex = i;
+                        console.log('宽松匹配找到科目行，索引:', i, '内容:', lines[i]);
+                        break;
+                    }
+                }
+            }
+            
+            if (tableStartIndex === -1) {
+                console.error('未找到表格开始位置');
+                console.log('所有行:', lines);
+                return null;
+            }
+            
+            // 找到数据开始位置（跳过表头行）
+            const subjectKeywords = ['数学', '语文', '英语', '安亲作业', '安亲作'];
+            let dataStartIndex = -1;
+            
+            // 从"科目"行开始查找第一个科目关键词
+            for (let i = tableStartIndex + 1; i < lines.length; i++) {
+                // 检查是否包含科目关键词
+                const line = lines[i];
+                let foundSubject = false;
+                let matchedSubject = '';
+                
+                for (const keyword of subjectKeywords) {
+                    if (line === keyword || line.includes(keyword)) {
+                        foundSubject = true;
+                        matchedSubject = keyword;
+                        break;
+                    }
+                }
+                
+                if (foundSubject) {
+                    dataStartIndex = i;
+                    console.log('找到数据开始位置，索引:', i, '科目:', matchedSubject, '内容:', line);
+                    break;
+                }
+                
+                // 如果遇到积分奖励情况，说明表格结束了
+                if (line.includes('纪律良好') || line.includes('积分奖励') || 
+                    line.includes('教师评语') || line.includes('贝尔安亲')) {
+                    console.log('到达表格结束，当前行:', line);
+                    break;
+                }
+            }
+            
+            if (dataStartIndex === -1) {
+                console.error('未找到数据开始位置');
+                console.log('科目行后的行:', lines.slice(tableStartIndex, tableStartIndex + 20));
+                return null;
+            }
+            
+            console.log('表格开始位置:', tableStartIndex, '数据开始位置:', dataStartIndex);
+            
+            // 从数据开始位置开始，解析作业项
+            let currentIndex = dataStartIndex;
+            
+            while (currentIndex < lines.length) {
+                // 检查是否到达表格结束
+                const currentLine = lines[currentIndex];
+                if (!currentLine || 
+                    currentLine.includes('纪律良好') || 
+                    currentLine.includes('积分奖励') ||
+                    currentLine.startsWith('总分') ||
+                    currentLine.includes('教师评语') ||
+                    currentLine.includes('贝尔安亲')) {
+                    console.log('到达表格结束，当前行:', currentLine);
+                    break;
+                }
+                
+                // 检查当前行是否是科目关键词
+                let isSubjectLine = false;
+                let subject = '';
+                
+                for (const keyword of subjectKeywords) {
+                    if (currentLine === keyword || currentLine.includes(keyword)) {
+                        isSubjectLine = true;
+                        subject = keyword;
+                        if (subject === '安亲作') {
+                            subject = '安亲作业';
+                        }
+                        break;
+                    }
+                }
+                
+                if (!isSubjectLine) {
+                    // 如果不是科目行，继续查找
+                    currentIndex++;
+                    continue;
+                }
+                
+                // 尝试读取接下来的6行数据
+                const assignment = {
+                    subject: subject,
+                    task: '',
+                    estimatedTime: '0',
+                    actualTime: '',
+                    completed: true,
+                    errorCount: '0',
+                    errorReasons: ''
+                };
+                
+                // 读取作业内容
+                if (currentIndex + 1 < lines.length) {
+                    assignment.task = lines[currentIndex + 1] || '';
+                }
+                
+                // 读取预估时间
+                if (currentIndex + 2 < lines.length) {
+                    assignment.estimatedTime = lines[currentIndex + 2] || '0';
+                    // 清理时间中的非数字字符
+                    assignment.estimatedTime = assignment.estimatedTime.replace(/\D/g, '') || '0';
+                }
+                
+                // 读取实际时间
+                if (currentIndex + 3 < lines.length) {
+                    assignment.actualTime = lines[currentIndex + 3] || '';
+                    // 清理时间中的非数字字符
+                    assignment.actualTime = assignment.actualTime.replace(/\D/g, '');
+                }
+                
+                // 读取完成情况
+                if (currentIndex + 4 < lines.length) {
+                    const completionStatus = lines[currentIndex + 4];
+                    if (completionStatus === '完成' || completionStatus === '未完成' || completionStatus === 'X') {
+                        assignment.completed = (completionStatus === '完成');
+                    } else {
+                        // 根据实际时间判断
+                        assignment.completed = !!assignment.actualTime && assignment.actualTime !== '';
+                    }
+                }
+                
+                // 读取错题数量
+                if (currentIndex + 5 < lines.length) {
+                    const errorCountStr = lines[currentIndex + 5];
+                    if (errorCountStr === '' || errorCountStr === ' ') {
+                        assignment.errorCount = '0';
+                    } else if (errorCountStr && /^\d+$/.test(errorCountStr)) {
+                        assignment.errorCount = errorCountStr;
+                    }
+                }
+                
+                // 读取错题原因
+                if (currentIndex + 6 < lines.length) {
+                    const errorReasonStr = lines[currentIndex + 6];
+                    if (errorReasonStr && isErrorReasonFormat(errorReasonStr)) {
+                        assignment.errorReasons = normalizeErrorReasons(errorReasonStr);
+                    }
+                }
+                
+                // 特殊处理：英语背诵课文没有错题
+                if (assignment.subject === '英语' && 
+                    assignment.task && 
+                    (assignment.task.includes('背诵') || assignment.task.includes('背诵课文'))) {
+                    assignment.errorCount = '0';
+                    assignment.errorReasons = '';
+                }
+                
+                console.log('解析作业项:', assignment);
+                assignments.push(assignment);
+                
+                // 移动到下一个可能的作业项（通常间隔7行，但移动设备可能有空行）
+                currentIndex += 7;
+                
+                // 跳过可能的多余空行
+                while (currentIndex < lines.length && 
+                       (lines[currentIndex] === '' || lines[currentIndex] === ' ')) {
+                    currentIndex++;
+                }
+            }
+            
+            console.log('解析结果:', assignments);
+            return assignments;
+        }
+        
+        // 解析文本内容
+        function parseContent() {
+            const ocrText = document.getElementById('ocrText').value;
+            if (!ocrText.trim()) {
+                alert('请输入扫描文本内容！');
+                return;
+            }
+            
+            showLoading();
+            
+            // 使用setTimeout让UI有机会更新加载状态
+            setTimeout(() => {
+                try {
+                    // 解析作业数据
+                    parsedAssignments = parseAssignmentsFromOCR(ocrText);
+                    
+                    if (parsedAssignments === null || parsedAssignments.length === 0) {
+                        document.getElementById('subjectList').innerHTML = 
+                            '<div class="error">未能解析到作业数据，请检查文本格式！</div>';
+                        console.error('解析失败，原始文本:', ocrText);
+                    } else {
+                        // 更新统计和显示
+                        updateStatisticsAndDisplay(parsedAssignments);
+                    }
+                } catch (error) {
+                    console.error('解析错误:', error);
+                    document.getElementById('subjectList').innerHTML = 
+                        '<div class="error">解析出错：' + error.message + '</div>';
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+        
+        // 更新统计和显示
+        function updateStatisticsAndDisplay(assignments) {
+            const total = assignments.length;
+            const completed = assignments.filter(a => a.completed).length;
+            const errorCount = assignments.reduce((sum, a) => {
+                const count = a.errorCount ? parseInt(a.errorCount) : 0;
+                return sum + (isNaN(count) ? 0 : count);
+            }, 0);
+            
+            // 更新统计
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('totalErrors').textContent = errorCount;
+            
+            // 更新作业详情显示
+            const subjectList = document.getElementById('subjectList');
+            subjectList.innerHTML = '';
+            
+            assignments.forEach(assignment => {
+                const div = document.createElement('div');
+                div.className = 'subject-item';
+                
+                // 获取错题原因描述
+                let errorReasonsDesc = '无';
+                if (assignment.errorReasons && assignment.errorReasons !== '') {
+                    const normalizedReasons = normalizeErrorReasons(assignment.errorReasons);
+                    const reasonCodes = normalizedReasons.split(',').filter(code => code.trim() !== '');
+                    const reasons = [];
+                    reasonCodes.forEach(code => {
+                        if (code && code.trim()) {
+                            const subjectErrors = errorReasons[assignment.subject];
+                            if (subjectErrors && subjectErrors[code.trim()]) {
+                                reasons.push(subjectErrors[code.trim()]);
+                            }
+                        }
+                    });
+                    if (reasons.length > 0) {
+                        errorReasonsDesc = reasons.join('、');
+                    }
+                }
+                
+                // 对于未完成的作业，实际时间留空
+                const actualTimeDisplay = assignment.completed && assignment.actualTime ? assignment.actualTime : '';
+                const errorCountDisplay = assignment.errorCount && assignment.errorCount !== '' ? assignment.errorCount : '0';
+                const statusEmoji = assignment.completed ? '✅' : '❌';
+                
+                // 时间描述更清晰
+                let timeDescription = `预计${assignment.estimatedTime}分钟`;
+                if (actualTimeDisplay) {
+                    timeDescription += `，实际完成${actualTimeDisplay}分钟`;
+                } else if (!assignment.completed) {
+                    timeDescription += `，未完成`;
+                }
+                
+                // 错题描述
+                let errorDescription = '';
+                if (assignment.errorReasons && assignment.errorReasons !== '') {
+                    errorDescription = `错题：${errorCountDisplay}题（${errorReasonsDesc}）`;
+                } else {
+                    errorDescription = `错题：${errorCountDisplay}题`;
+                }
+                
+                div.innerHTML = `
+                    <div><strong>${assignment.subject}</strong> - ${assignment.task}</div>
+                    <div>${timeDescription} ${statusEmoji}</div>
+                    <div>${errorDescription}</div>
+                `;
+                
+                subjectList.appendChild(div);
+            });
+        }
+        
+        // 生成反馈内容
+        function generateFeedback() {
+            const studentName = document.getElementById('studentName').value || '学生';
+            const date = document.getElementById('date').value || new Date().toLocaleDateString('zh-CN');
+            const teacherName = document.getElementById('teacherName').value || '辅导老师';
+            
+            // 检查是否有解析的作业数据
+            if (parsedAssignments.length === 0) {
+                alert('请先解析文本内容！');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                try {
+                    // 统计信息
+                    const total = parsedAssignments.length;
+                    const completed = parsedAssignments.filter(a => a.completed).length;
+                    const errorCount = parsedAssignments.reduce((sum, a) => {
+                        const count = a.errorCount ? parseInt(a.errorCount) : 0;
+                        return sum + (isNaN(count) ? 0 : count);
+                    }, 0);
+                    
+                    // 计算总时间
+                    const totalEstimatedTime = parsedAssignments.reduce((sum, a) => sum + (parseInt(a.estimatedTime) || 0), 0);
+                    const totalActualTime = parsedAssignments
+                        .filter(a => a.completed && a.actualTime)
+                        .reduce((sum, a) => sum + (parseInt(a.actualTime) || 0), 0);
+                    
+                    // 计算时间使用情况
+                    let timeUsageDescription = '';
+                    if (totalActualTime > 0) {
+                        const timeRatio = totalActualTime / totalEstimatedTime;
+                        if (timeRatio < 0.9) {
+                            timeUsageDescription = '用时合理，效率较高';
+                        } else if (timeRatio <= 1.1) {
+                            timeUsageDescription = '用时正常，按计划完成';
+                        } else if (timeRatio <= 1.3) {
+                            timeUsageDescription = '用时稍多，需注意时间管理';
+                        } else {
+                            timeUsageDescription = '用时较多，需提高效率';
+                        }
+                    } else {
+                        timeUsageDescription = '部分作业未完成';
+                    }
+                    
+                    // 按科目统计错题数
+                    const subjectErrorCounts = {};
+                    parsedAssignments.forEach(assignment => {
+                        if (!subjectErrorCounts[assignment.subject]) {
+                            subjectErrorCounts[assignment.subject] = 0;
+                        }
+                        const count = assignment.errorCount ? parseInt(assignment.errorCount) : 0;
+                        subjectErrorCounts[assignment.subject] += (isNaN(count) ? 0 : count);
+                    });
+                    
+                    // 获取选择的评语
+                    const goodComments = Array.from(document.querySelectorAll('input[name="good"]:checked'))
+                        .map(cb => cb.value);
+                    const improveComments = Array.from(document.querySelectorAll('input[name="improve"]:checked'))
+                        .map(cb => cb.value);
+                    
+                    const additionalComment = document.getElementById('additionalComment').value;
+                    
+                    // 检查是否选择了课堂效率相关的评语
+                    const hasClassroomEfficiencyComments = improveComments.some(comment => 
+                        comment.includes('课堂效率') || comment.includes('课堂任务') || comment.includes('新课知识')
+                    );
+                    
+                    // 构建反馈
+                    let feedback = `【${studentName}同学今日学情反馈】\n\n`;
+                    feedback += `📅 日期：${date}\n`;
+                    feedback += `👨‍🏫 辅导老师：${teacherName}\n\n`;
+                    
+                    feedback += `📊 学习概况\n`;
+                    feedback += `   • 作业总项数：${total}项\n`;
+                    feedback += `   • 已完成项数：${completed}项\n`;
+                    feedback += `   • 今日错题总数：${errorCount}题\n`;
+                    feedback += `   • 预计总时长：${totalEstimatedTime}分钟\n`;
+                    feedback += `   • 实际总时长：${totalActualTime}分钟\n`;
+                    feedback += `   • 时间使用情况：${timeUsageDescription}\n\n`;
+                    
+                    feedback += `📚 各科作业详情\n`;
+                    parsedAssignments.forEach(assignment => {
+                        const status = assignment.completed ? '✅' : '❌';
+                        
+                        // 时间描述更清晰
+                        let timeDescription = `预计${assignment.estimatedTime}分钟`;
+                        if (assignment.completed && assignment.actualTime) {
+                            timeDescription += `，实际完成${assignment.actualTime}分钟`;
+                        } else if (!assignment.completed) {
+                            timeDescription += `，未完成`;
+                        }
+                        
+                        // 获取错题原因描述
+                        let errorReasonsDesc = '';
+                        if (assignment.errorReasons && assignment.errorReasons !== '') {
+                            const normalizedReasons = normalizeErrorReasons(assignment.errorReasons);
+                            const reasonCodes = normalizedReasons.split(',').filter(code => code.trim() !== '');
+                            const reasons = [];
+                            reasonCodes.forEach(code => {
+                                if (code && code.trim()) {
+                                    const subjectErrors = errorReasons[assignment.subject];
+                                    if (subjectErrors && subjectErrors[code.trim()]) {
+                                        reasons.push(subjectErrors[code.trim()]);
+                                    }
+                                }
+                            });
+                            if (reasons.length > 0) {
+                                errorReasonsDesc = reasons.join('、');
+                            }
+                        }
+                        
+                        feedback += `   ${status} ${assignment.subject}：${assignment.task}（${timeDescription}）`;
+                        
+                        const errorCountValue = assignment.errorCount ? parseInt(assignment.errorCount) : 0;
+                        if (assignment.completed && !isNaN(errorCountValue)) {
+                            if (errorCountValue > 0) {
+                                feedback += `，错题${errorCountValue}题`;
+                                if (errorReasonsDesc) {
+                                    feedback += `（${errorReasonsDesc}）`;
+                                }
+                            } else if (errorReasonsDesc) {
+                                feedback += `，错题0题（${errorReasonsDesc}）`;
+                            } else {
+                                feedback += `，错题0题`;
+                            }
+                        }
+                        feedback += '\n';
+                    });
+                    feedback += '\n';
+                    
+                    feedback += `👨‍🏫 教师评语\n`;
+                    
+                    // 添加好的方面 - 使用分号分隔
+                    if (goodComments.length > 0) {
+                        feedback += `   ✅ 好的方面：${goodComments.join('；')}\n`;
+                    }
+                    
+                    // 添加需改进方面 - 使用分号分隔
+                    if (improveComments.length > 0) {
+                        feedback += `   ⚠️ 需改进：${improveComments.join('；')}\n`;
+                    }
+                    
+                    if (additionalComment) {
+                        feedback += `   💡 补充：${additionalComment}\n`;
+                    }
+                    
+                    feedback += `\n💪 建议\n`;
+                    
+                    // 第一条建议
+                    feedback += `   1. 典型错题会收录到贝尔安亲错题宝，高效查漏补缺\n`;
+                    
+                    // 第二条建议：根据各科错题数给出建议
+                    Object.keys(subjectErrorCounts).forEach(subject => {
+                        const count = subjectErrorCounts[subject];
+                        if (count > 5) {
+                            feedback += `   2. ${subject}今日错题总数${count}道，重点关注\n`;
+                        }
+                    });
+                    
+                    // 第三条建议：如果选择了课堂效率相关评语
+                    if (hasClassroomEfficiencyComments) {
+                        feedback += `   3. 请关注孩子在学校的课堂效率\n`;
+                    }
+                    
+                    feedback += `\n────────────\n`;
+                    feedback += `生成时间：${new Date().toLocaleString('zh-CN')}\n`;
+                    feedback += `贝尔安亲一小校区\n`;
+                    
+                    document.getElementById('resultBox').textContent = feedback;
+                } catch (error) {
+                    console.error('生成反馈错误:', error);
+                    alert('生成反馈时出错：' + error.message);
+                } finally {
+                    hideLoading();
+                }
+            }, 100);
+        }
+        
+        // 复制到剪贴板 - 优化版，专门解决华为手机复制问题
+        function copyToClipboard() {
+            const feedback = document.getElementById('resultBox').textContent;
+            
+            if (!feedback || feedback === '反馈内容将在这里显示...') {
+                alert('请先生成反馈内容！');
+                return;
+            }
+            
+            // 方法1：尝试使用现代 Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(feedback)
+                    .then(() => {
+                        showCopySuccess();
+                    })
+                    .catch(err => {
+                        console.log('Clipboard API 失败，尝试备用方法:', err);
+                        copyWithFallback(feedback);
+                    });
+            } else {
+                // 如果不支持 Clipboard API，直接使用备用方法
+                copyWithFallback(feedback);
+            }
+        }
+        
+        // 备用复制方法（兼容华为手机）
+        function copyWithFallback(text) {
+            // 创建一个临时的textarea元素
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            // 设置为只读，避免移动设备键盘弹出
+            textArea.readOnly = true;
+            
+            // 设置样式确保在屏幕上不可见
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            textArea.style.opacity = '0';
+            textArea.style.fontSize = '16px'; // 设置字体大小
+            
+            // 添加到DOM
+            document.body.appendChild(textArea);
+            
+            // 在移动设备上，需要先聚焦再选择
+            textArea.focus();
+            
+            // 选择文本
+            textArea.select();
+            textArea.setSelectionRange(0, text.length); // 对于移动设备
+            
+            // 尝试复制
+            let successful = false;
+            try {
+                successful = document.execCommand('copy');
+            } catch (err) {
+                console.error('execCommand 复制失败:', err);
+            }
+            
+            // 移除临时元素
+            document.body.removeChild(textArea);
+            
+            if (successful) {
+                showCopySuccess();
+            } else {
+                // 如果还是失败，显示文本区域让用户手动复制
+                showManualCopy(text);
+            }
+        }
+        
+        // 显示复制成功提示
+        function showCopySuccess() {
+            // 震动反馈（如果支持）
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // 临时改变按钮文字
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ 已复制';
+            copyBtn.style.backgroundColor = '#2ecc71';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.backgroundColor = '';
+            }, 2000);
+        }
+        
+        // 显示手动复制界面（备用方案）
+        function showManualCopy(text) {
+            // 创建一个模态框用于手动复制
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.zIndex = '9999';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.padding = '20px';
+            
+            // 创建内容容器
+            const content = document.createElement('div');
+            content.style.backgroundColor = 'white';
+            content.style.borderRadius = '10px';
+            content.style.padding = '20px';
+            content.style.width = '100%';
+            content.style.maxWidth = '500px';
+            content.style.maxHeight = '80vh';
+            content.style.overflow = 'auto';
+            
+            // 标题
+            const title = document.createElement('h3');
+            title.textContent = '手动复制';
+            title.style.marginBottom = '15px';
+            title.style.color = '#2c3e50';
+            
+            // 提示文本
+            const hint = document.createElement('p');
+            hint.textContent = '请长按下方文本并选择"复制"：';
+            hint.style.marginBottom = '10px';
+            hint.style.color = '#666';
+            hint.style.fontSize = '14px';
+            
+            // 文本区域用于复制
+            const copyTextarea = document.createElement('textarea');
+            copyTextarea.value = text;
+            copyTextarea.readOnly = true;
+            copyTextarea.style.width = '100%';
+            copyTextarea.style.height = '200px';
+            copyTextarea.style.padding = '10px';
+            copyTextarea.style.border = '1px solid #ddd';
+            copyTextarea.style.borderRadius = '5px';
+            copyTextarea.style.fontSize = '14px';
+            copyTextarea.style.lineHeight = '1.5';
+            copyTextarea.style.resize = 'none';
+            copyTextarea.style.marginBottom = '15px';
+            
+            // 自动选中文本
+            setTimeout(() => {
+                copyTextarea.select();
+                copyTextarea.setSelectionRange(0, text.length);
+            }, 100);
+            
+            // 按钮容器
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.justifyContent = 'flex-end';
+            buttonContainer.style.gap = '10px';
+            
+            // 关闭按钮
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '关闭';
+            closeBtn.style.padding = '10px 20px';
+            closeBtn.style.backgroundColor = '#f0f0f0';
+            closeBtn.style.border = 'none';
+            closeBtn.style.borderRadius = '5px';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.fontSize = '14px';
+            
+            closeBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            closeBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                document.body.removeChild(modal);
+            }, { passive: false });
+            
+            // 组装模态框
+            buttonContainer.appendChild(closeBtn);
+            content.appendChild(title);
+            content.appendChild(hint);
+            content.appendChild(copyTextarea);
+            content.appendChild(buttonContainer);
+            modal.appendChild(content);
+            
+            // 添加到页面
+            document.body.appendChild(modal);
+            
+            // 点击模态框背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+        
+        // 保存为文本文件
+        function saveAsText() {
+            const feedback = document.getElementById('resultBox').textContent;
+            const studentName = document.getElementById('studentName').value || '学生';
+            const date = document.getElementById('date').value || new Date().toLocaleDateString('zh-CN');
+            
+            if (feedback && feedback !== '反馈内容将在这里显示...') {
+                try {
+                    const blob = new Blob([feedback], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${studentName}_学情反馈_${date.replace(/\//g, '-')}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                } catch (error) {
+                    console.error('保存文件错误:', error);
+                    alert('保存文件时出错：' + error.message);
+                }
+            } else {
+                alert('请先生成反馈内容！');
+            }
+        }
+        
+        // 清空所有内容
+        function clearAll() {
+            if (confirm('确定要清空所有内容吗？')) {
+                document.getElementById('ocrText').value = '';
+                document.getElementById('studentName').value = '';
+                document.getElementById('date').value = '';
+                document.getElementById('teacherName').value = '';
+                document.getElementById('additionalComment').value = '';
+                document.getElementById('resultBox').textContent = '反馈内容将在这里显示...';
+                
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+                
+                document.getElementById('totalTasks').textContent = '0';
+                document.getElementById('completedTasks').textContent = '0';
+                document.getElementById('totalErrors').textContent = '0';
+                document.getElementById('subjectList').innerHTML = '<div class="hint">请先解析文本内容</div>';
+                
+                parsedAssignments = [];
+            }
+        }
+        
+        // 事件绑定函数
+        function bindEvents() {
+            // 智能解析按钮
+            parseBtn.addEventListener('click', parseContent);
+            parseBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                parseContent();
+            }, { passive: false });
+            
+            // 清空按钮
+            clearBtn.addEventListener('click', clearAll);
+            clearBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                clearAll();
+            }, { passive: false });
+            
+            // 生成反馈按钮
+            generateBtn.addEventListener('click', generateFeedback);
+            generateBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                generateFeedback();
+            }, { passive: false });
+            
+            // 复制按钮
+            copyBtn.addEventListener('click', copyToClipboard);
+            copyBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                copyToClipboard();
+            }, { passive: false });
+            
+            // 保存按钮
+            saveBtn.addEventListener('click', saveAsText);
+            saveBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                saveAsText();
+            }, { passive: false });
+            
+            // 为复选框添加触摸支持
+            document.querySelectorAll('.comment-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+            });
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认日期为系统日期
+            const today = new Date();
+            const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
+            document.getElementById('date').value = formattedDate;
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 自动解析
+            setTimeout(() => {
+                if (document.getElementById('ocrText').value.trim()) {
+                    parseContent();
+                }
+            }, 1000);
+        });
+        
+        // 防止移动端双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
