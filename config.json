@@ -1,18 +1,20 @@
 {
   "tokens": {
-    "01": "012026_app2_aaaa",
-    "02": "022026_app2_bbbb",
-    "03": "032026_app2_cccc",
-    "04": "042026_app2_dddd",
-    "05": "052026_app2_eeee",
-    "06": "062026_app2_ffff",
-    "07": "072026_app2_gggg",
-    "08": "082026_app2_hhhh",
-    "09": "092026_app2_iiii",
-    "10": "102026_app2_jjjj",
-    "11": "112026_app2_kkkk",
-    "12": "122026_app2_llll"
+    "10": "102026_app2_gex6sbcliip6mlvkosn0rm",
+    "11": "112026_app2_hh8bwyrizgi93aaldzkkum",
+    "12": "122026_app2_o1zmylh7k6j7z6c0nk2zan",
+    "01": "012026_app2_nu27e2g8hohuvjwg7m115",
+    "02": "022026_app2_yva28h2vpv5tvqsiwj64f",
+    "03": "032026_app2_chmlgpx4e657avt2n330er",
+    "04": "042026_app2_f7k3w5za4zollouu8ixurn",
+    "05": "052026_app2_4majxgxsdovz32vkgxnpgm",
+    "06": "062026_app2_qjjw69ecyux7lu7pajpnq",
+    "07": "072026_app2_oamgd4xfq7nzmp9hqu52k",
+    "08": "082026_app2_clvlf0g11uvtkfmqhvoy8l",
+    "09": "092026_app2_t9dfegbztuctqsmdv6fzu"
   },
-  "allowedDomains": ["github.io"],
+  "allowedDomains": [
+    "github.io"
+  ],
   "maxAttempts": 3
 }
