@@ -975,18 +975,23 @@ X
                     timeDescription += `，未完成`;
                 }
                 
-                // 错题描述
+                // 错题描述 - 修改：错题数为0但有错题原因时也显示
                 let errorDescription = '';
-                if (assignment.errorReasons && assignment.errorReasons !== '') {
-                    errorDescription = `错题：${errorCountDisplay}题（${errorReasonsDesc}）`;
-                } else {
-                    errorDescription = `错题：${errorCountDisplay}题`;
+                const errorCountValue = parseInt(errorCountDisplay);
+                // 修改：如果错题数大于0，或者错题数为0但有错题原因，都显示错题信息
+                if (!isNaN(errorCountValue) && 
+                    (errorCountValue > 0 || (errorCountValue === 0 && assignment.errorReasons && assignment.errorReasons !== ''))) {
+                    if (errorReasonsDesc !== '无') {
+                        errorDescription = `错题：${errorCountDisplay}题（${errorReasonsDesc}）`;
+                    } else {
+                        errorDescription = `错题：${errorCountDisplay}题`;
+                    }
                 }
                 
                 div.innerHTML = `
                     <div><strong>${assignment.subject}</strong> - ${assignment.task}</div>
                     <div>${timeDescription} ${statusEmoji}</div>
-                    <div>${errorDescription}</div>
+                    ${errorDescription ? `<div>${errorDescription}</div>` : ''}
                 `;
                 
                 subjectList.appendChild(div);
@@ -1110,16 +1115,12 @@ X
                         feedback += `   ${status} ${assignment.subject}：${assignment.task}（${timeDescription}）`;
                         
                         const errorCountValue = assignment.errorCount ? parseInt(assignment.errorCount) : 0;
-                        if (assignment.completed && !isNaN(errorCountValue)) {
-                            if (errorCountValue > 0) {
-                                feedback += `，错题${errorCountValue}题`;
-                                if (errorReasonsDesc) {
-                                    feedback += `（${errorReasonsDesc}）`;
-                                }
-                            } else if (errorReasonsDesc) {
-                                feedback += `，错题0题（${errorReasonsDesc}）`;
-                            } else {
-                                feedback += `，错题0题`;
+                        // 修改：错题数大于0，或者错题数为0但有错题原因，都显示错题信息
+                        if (assignment.completed && !isNaN(errorCountValue) && 
+                            (errorCountValue > 0 || (errorCountValue === 0 && errorReasonsDesc !== ''))) {
+                            feedback += `，错题${errorCountValue}题`;
+                            if (errorReasonsDesc) {
+                                feedback += `（${errorReasonsDesc}）`;
                             }
                         }
                         feedback += '\n';
@@ -1144,20 +1145,20 @@ X
                     
                     feedback += `\n💪 建议\n`;
                     
-                    // 第一条建议
-                    feedback += `   1. 典型错题会收录到贝尔安亲错题宝，高效查漏补缺\n`;
+                    // 第一条建议 - 修改：使用固定符号●代替序号
+                    feedback += `   ● 典型错题会收录到贝尔安亲错题宝，高效查漏补缺\n`;
                     
-                    // 第二条建议：根据各科错题数给出建议
+                    // 第二条建议：根据各科错题数给出建议 - 修改：使用固定符号●
                     Object.keys(subjectErrorCounts).forEach(subject => {
                         const count = subjectErrorCounts[subject];
                         if (count > 5) {
-                            feedback += `   2. ${subject}今日错题总数${count}道，重点关注\n`;
+                            feedback += `   ● ${subject}今日错题总数${count}道，重点关注\n`;
                         }
                     });
                     
-                    // 第三条建议：如果选择了课堂效率相关评语
+                    // 第三条建议：如果选择了课堂效率相关评语 - 修改：使用固定符号●
                     if (hasClassroomEfficiencyComments) {
-                        feedback += `   3. 请关注孩子在学校的课堂效率\n`;
+                        feedback += `   ● 请关注孩子在学校的课堂效率\n`;
                     }
                     
                     feedback += `\n────────────\n`;
