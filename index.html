@@ -108,7 +108,7 @@
             // 加载配置
             async loadConfig() {
                 try {
-                    const response = await fetch('config.json');
+                   const response = await fetch('config.json');
                     this.config = await response.json();
                     return true;
                 } catch (error) {
