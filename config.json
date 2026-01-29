@@ -1,8 +1,18 @@
 {
-  "currentToken": "oct2024_abc123def456",
-  "tokenExpiry": "2024-10-31T23:59:59",
-  "nextToken": "nov2024_xyz789uvw012",
-  "nextTokenActivation": "2024-11-01T00:00:00",
+  "tokens": {
+    "01": "012026_app2_aaaa",
+    "02": "022026_app2_bbbb",
+    "03": "032026_app2_cccc",
+    "04": "042026_app2_dddd",
+    "05": "052026_app2_eeee",
+    "06": "062026_app2_ffff",
+    "07": "072026_app2_gggg",
+    "08": "082026_app2_hhhh",
+    "09": "092026_app2_iiii",
+    "10": "102026_app2_jjjj",
+    "11": "112026_app2_kkkk",
+    "12": "122026_app2_llll"
+  },
   "allowedDomains": ["github.io"],
   "maxAttempts": 3
 }
