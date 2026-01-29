@@ -16,6 +16,13 @@
             margin: 0 auto;
         }
         h1 { text-align: center; margin-bottom: 30px; color: #333; }
+        .app-info {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
         .months-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -54,18 +61,6 @@
             word-break: break-all;
             font-size: 12px;
         }
-        .qrcode-placeholder {
-            text-align: center;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
         .btn {
             background: #4CAF50;
             color: white;
@@ -77,6 +72,10 @@
             display: inline-block;
         }
         .btn:hover { background: #45a049; }
+        .btn-secondary {
+            background: #008CBA;
+        }
+        .btn-secondary:hover { background: #007B9A; }
         .instructions {
             background: #fff8e1;
             padding: 20px;
@@ -95,30 +94,79 @@
             left: 0;
             color: #4CAF50;
         }
+        .control-panel {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .year-selector {
+            margin: 15px 0;
+        }
+        .year-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .year-selector input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100px;
+        }
+        .qr-link {
+            margin-top: 15px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📅 第二个应用 - 12个月二维码生成器</h1>
         
+        <div class="app-info">
+            <h3>应用信息</h3>
+            <p><strong>应用名称：</strong>作业反馈系统</p>
+            <p><strong>访问地址：</strong>https://hf556644.github.io/app2/</p>
+            <p><strong>实际应用：</strong>贝尔安亲作业反馈系统.html</p>
+            <p><strong>验证方式：</strong>每月动态令牌</p>
+        </div>
+        
         <div class="instructions">
             <h3>使用说明：</h3>
-            <div class="step">点击下方按钮生成12个月令牌</div>
-            <div class="step">下载生成的config.json文件</div>
-            <div class="step">上传config.json到app2仓库替换旧的</div>
+            <div class="step">选择年份（默认为2026年）</div>
+            <div class="step">点击"生成12个月令牌"按钮</div>
             <div class="step">复制每月链接到二维码生成网站</div>
             <div class="step">生成并保存12张二维码图片</div>
+            <div class="step">下载配置文件并上传到GitHub</div>
             <div class="step">每月分发对应的二维码给用户</div>
         </div>
         
-        <button onclick="generateAllMonths()" class="btn" style="background: #008CBA; padding: 15px 30px; font-size: 16px;">
-            生成12个月令牌
-        </button>
+        <div class="control-panel">
+            <div class="year-selector">
+                <label for="year">选择年份：</label>
+                <input type="number" id="year" value="2026" min="2024" max="2030">
+            </div>
+            
+            <button onclick="generateAllMonths()" class="btn" style="padding: 15px 30px; font-size: 16px;">
+                🚀 生成12个月令牌
+            </button>
+            
+            <button onclick="downloadConfig()" class="btn btn-secondary" style="padding: 15px 30px; font-size: 16px;">
+                📥 下载config.json配置文件
+            </button>
+        </div>
         
         <div id="months-container" class="months-container"></div>
     </div>
     
     <script>
+        // 存储生成的令牌
+        let generatedTokens = {};
+        let currentYear = 2026;
+        
         // 生成随机令牌
         function generateToken() {
             return Math.random().toString(36).substring(2, 15) + 
@@ -130,34 +178,33 @@
             const container = document.getElementById('months-container');
             container.innerHTML = '';
             
-            const year = 2026; // 可根据需要修改年份
+            currentYear = parseInt(document.getElementById('year').value);
+            generatedTokens = {};
+            
             const baseUrl = 'https://hf556644.github.io/app2/';
             
             for (let month = 1; month <= 12; month++) {
                 const monthStr = month.toString().padStart(2, '0');
-                const token = `${monthStr}${year}_app2_${generateToken().substring(0, 8)}`;
+                const token = `${monthStr}${currentYear}_app2_${generateToken()}`;
                 const url = `${baseUrl}?token=${token}`;
+                
+                // 存储令牌
+                generatedTokens[monthStr] = token;
                 
                 // 创建月份卡片
                 const card = document.createElement('div');
                 card.className = 'month-card';
                 card.innerHTML = `
-                    <div class="month-title">${month}月</div>
+                    <div class="month-title">${month}月 (${currentYear})</div>
                     <div class="token-info">
                         <strong>令牌：</strong><br>
                         ${token}
                     </div>
                     <div class="url-info">
-                        <strong>链接：</strong><br>
+                        <strong>扫码链接：</strong><br>
                         ${url}
                     </div>
-                    <div class="qrcode-placeholder" id="qr-${monthStr}">
-                        <p>📱 请复制链接到二维码网站生成二维码</p>
-                        <p style="font-size: 12px; margin-top: 10px; color: #666;">
-                            推荐：草料二维码、QR Code Generator
-                        </p>
-                    </div>
-                    <div style="text-align: center;">
+                    <div class="qr-link">
                         <button onclick="copyLink('${url}')" class="btn">复制链接</button>
                         <button onclick="copyToken('${token}')" class="btn">复制令牌</button>
                     </div>
@@ -166,53 +213,101 @@
                 container.appendChild(card);
             }
             
-            alert('12个月令牌已生成！请复制链接到二维码生成网站制作二维码。');
+            // 显示下载按钮
+            showDownloadButton();
             
-            // 同时生成config.json内容供下载
-            generateConfigFile();
+            alert(`${currentYear}年12个月令牌已生成！请复制链接到二维码生成网站制作二维码。`);
+        }
+        
+        // 显示下载按钮
+        function showDownloadButton() {
+            // 确保下载按钮可见
+            document.querySelector('.control-panel').scrollIntoView({ behavior: 'smooth' });
         }
         
         // 生成config.json文件内容
         function generateConfigFile() {
-            let config = {
-                tokens: {},
+            if (Object.keys(generatedTokens).length === 0) {
+                alert('请先生成12个月令牌！');
+                return null;
+            }
+            
+            const config = {
+                tokens: generatedTokens,
                 allowedDomains: ["github.io"],
                 maxAttempts: 3
             };
             
-            // 从页面收集所有令牌
-            const cards = document.querySelectorAll('.month-card');
-            cards.forEach(card => {
-                const monthText = card.querySelector('.month-title').textContent;
-                const month = monthText.replace('月', '').padStart(2, '0');
-                const token = card.querySelector('.token-info').textContent.replace('令牌：', '').trim();
-                config.tokens[month] = token;
-            });
+            return config;
+        }
+        
+        // 下载配置文件
+        function downloadConfig() {
+            const config = generateConfigFile();
+            if (!config) return;
             
-            // 创建下载按钮
-            const downloadBtn = document.createElement('button');
-            downloadBtn.className = 'btn';
-            downloadBtn.style.background = '#9C27B0';
-            downloadBtn.style.marginTop = '20px';
-            downloadBtn.innerHTML = '📥 下载config.json配置文件';
-            downloadBtn.onclick = () => {
-                const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'config.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                alert('配置文件已生成！请上传到app2仓库替换旧的config.json');
-            };
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `config-${currentYear}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
             
-            document.querySelector('.instructions').appendChild(downloadBtn);
+            alert(`配置文件已生成！\n\n请完成以下操作：\n1. 访问 https://github.com/hf556644/app2\n2. 点击 config.json 文件\n3. 点击编辑按钮\n4. 粘贴新内容\n5. 提交更改\n6. 等待1-2分钟生效`);
+            
+            // 同时显示所有链接供复制
+            showAllLinks();
+        }
+        
+        // 显示所有链接供批量复制
+        function showAllLinks() {
+            const baseUrl = 'https://hf556644.github.io/app2/';
+            let allLinks = '';
+            
+            for (let month = 1; month <= 12; month++) {
+                const monthStr = month.toString().padStart(2, '0');
+                const token = generatedTokens[monthStr];
+                if (token) {
+                    const url = `${baseUrl}?token=${token}`;
+                    allLinks += `${currentYear}年${month}月: ${url}\n`;
+                }
+            }
+            
+            // 创建文本区域显示所有链接
+            const textarea = document.createElement('textarea');
+            textarea.value = allLinks;
+            textarea.style.width = '100%';
+            textarea.style.height = '200px';
+            textarea.style.marginTop = '20px';
+            textarea.style.padding = '10px';
+            textarea.style.fontFamily = 'monospace';
+            textarea.placeholder = '所有月份的扫码链接将在这里显示...';
+            
+            const container = document.querySelector('.control-panel');
+            if (!container.querySelector('textarea')) {
+                container.appendChild(textarea);
+                
+                // 添加复制按钮
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'btn';
+                copyBtn.style.marginTop = '10px';
+                copyBtn.textContent = '📋 复制所有链接';
+                copyBtn.onclick = function() {
+                    textarea.select();
+                    document.execCommand('copy');
+                    alert('所有链接已复制到剪贴板！');
+                };
+                container.appendChild(copyBtn);
+            }
+            
+            textarea.value = allLinks;
         }
         
         // 复制链接
         function copyLink(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('链接已复制到剪贴板！');
+                alert('链接已复制到剪贴板！\n\n请到二维码生成网站粘贴生成二维码。\n\n推荐网站：\n- 草料二维码 (cli.im)\n- QR Code Generator');
             });
         }
         
@@ -224,7 +319,15 @@
         }
         
         // 页面加载时自动生成
-        window.onload = generateAllMonths;
+        window.onload = function() {
+            // 可以设置默认年份为下一年
+            const now = new Date();
+            const nextYear = now.getFullYear() + 1;
+            document.getElementById('year').value = nextYear;
+            
+            // 自动生成（可选）
+            // setTimeout(generateAllMonths, 500);
+        };
     </script>
 </body>
 </html>
