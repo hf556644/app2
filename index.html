@@ -205,30 +205,31 @@ body {
 
             // 主验证流程
             async authenticate() {
-                const loading = document.getElementById('loading');
-                const content = document.getElementById('content');
-                const error = document.getElementById('error');
+    const loading = document.getElementById('loading');
+    const content = document.getElementById('content');
+    const error = document.getElementById('error');
 
-                try {
-                    await this.validateToken();
-                    
-                    // 验证成功
-                    if (loading) loading.classList.add('hidden');
-                    this.updatePageInfo();
-                    if (content) content.classList.remove('hidden');
-                    
-                    // 记录访问日志
-                    this.logAccess();
-                    
-                } catch (errorMsg) {
-                    // 验证失败
-                    if (loading) loading.classList.add('hidden');
-                    const errorMessage = document.getElementById('error-message');
-                    if (errorMessage) errorMessage.textContent = errorMsg;
-                    if (error) error.classList.remove('hidden');
-                }
-            }
-
+    try {
+        await this.validateToken();
+        
+        // 验证成功
+        if (loading) loading.classList.add('hidden');
+        this.updatePageInfo();
+        if (content) content.classList.remove('hidden');
+        if (error) error.classList.add('hidden');  // 隐藏错误
+        
+        // 记录访问日志
+        this.logAccess();
+        
+    } catch (errorMsg) {
+        // 验证失败
+        if (loading) loading.classList.add('hidden');
+        if (content) content.classList.add('hidden');  // 隐藏内容
+        const errorMessage = document.getElementById('error-message');
+        if (errorMessage) errorMessage.textContent = errorMsg;
+        if (error) error.classList.remove('hidden');
+    }
+}
             // 记录访问日志
             logAccess() {
                 const log = {
