@@ -75,9 +75,10 @@ body {
                     
                     <div class="actions">
                         <!-- 重要：修改这里为你第二个应用的实际文件 -->
-                        <button onclick="window.open('贝尔安亲作业反馈系统.html', '_blank')" class="btn-primary">
-                            <i class="fas fa-external-link-alt"></i> 进入贝尔安亲作业反馈系统
-                        </button>
+                        <!-- 进入系统按钮 - 默认隐藏 -->
+<button id="enterSystemBtn" onclick="window.open('贝尔安亲作业反馈系统.html', '_blank')" class="btn-primary" style="display: none;">
+    <i class="fas fa-external-link-alt"></i> 进入贝尔安亲作业反馈系统
+</button>
                         <button onclick="location.reload()" class="btn-secondary">
                             <i class="fas fa-redo"></i> 重新验证
                         </button>
@@ -204,11 +205,12 @@ body {
             }
 
             // 主验证流程
-           async authenticate() {
+console.log('开始验证，当前按钮状态:', document.getElementById('enterSystemBtn'))
+async authenticate() {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const error = document.getElementById('error');
-    const enterBtn = document.getElementById('enter-system-btn');  // 获取按钮
+    const enterBtn = document.getElementById('enterSystemBtn');  // 获取按钮
 
     try {
         await this.validateToken();
@@ -218,7 +220,12 @@ body {
         this.updatePageInfo();
         if (content) content.classList.remove('hidden');
         if (error) error.classList.add('hidden');
-        if (enterBtn) enterBtn.style.display = 'inline-block';  // 显示按钮
+        
+        // 显示进入系统按钮（直接操作style）
+        if (enterBtn) {
+            enterBtn.style.display = 'inline-block';
+            console.log('按钮已显示');  // 可以在控制台查看
+        }
         
         // 记录访问日志
         this.logAccess();
@@ -227,23 +234,18 @@ body {
         // 验证失败
         if (loading) loading.classList.add('hidden');
         if (content) content.classList.add('hidden');
-        if (enterBtn) enterBtn.style.display = 'none';  // 隐藏按钮
+        
+        // 隐藏进入系统按钮
+        if (enterBtn) {
+            enterBtn.style.display = 'none';
+            console.log('按钮已隐藏');
+        }
+        
         const errorMessage = document.getElementById('error-message');
         if (errorMessage) errorMessage.textContent = errorMsg;
         if (error) error.classList.remove('hidden');
     }
 }
-            // 记录访问日志
-            logAccess() {
-                const log = {
-                    timestamp: new Date().toISOString(),
-                    userAgent: navigator.userAgent,
-                    token: this.currentToken ? this.currentToken.substring(0, 8) + '...' : 'none',
-                    verified: true
-                };
-                console.log('访问记录:', log);
-            }
-        }
 
         // 页面加载时启动验证
         document.addEventListener('DOMContentLoaded', () => {
