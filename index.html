@@ -204,10 +204,11 @@ body {
             }
 
             // 主验证流程
-            async authenticate() {
+           async authenticate() {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const error = document.getElementById('error');
+    const enterBtn = document.getElementById('enter-system-btn');  // 获取按钮
 
     try {
         await this.validateToken();
@@ -216,7 +217,8 @@ body {
         if (loading) loading.classList.add('hidden');
         this.updatePageInfo();
         if (content) content.classList.remove('hidden');
-        if (error) error.classList.add('hidden');  // 隐藏错误
+        if (error) error.classList.add('hidden');
+        if (enterBtn) enterBtn.style.display = 'inline-block';  // 显示按钮
         
         // 记录访问日志
         this.logAccess();
@@ -224,7 +226,8 @@ body {
     } catch (errorMsg) {
         // 验证失败
         if (loading) loading.classList.add('hidden');
-        if (content) content.classList.add('hidden');  // 隐藏内容
+        if (content) content.classList.add('hidden');
+        if (enterBtn) enterBtn.style.display = 'none';  // 隐藏按钮
         const errorMessage = document.getElementById('error-message');
         if (errorMessage) errorMessage.textContent = errorMsg;
         if (error) error.classList.remove('hidden');
