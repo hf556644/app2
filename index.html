@@ -247,23 +247,21 @@ async authenticate() {
     }
 }
 
-        // 页面加载时启动验证
+                // 页面加载时启动所有功能
         document.addEventListener('DOMContentLoaded', () => {
+            // 1. 启动验证
             const auth = new AuthSystem();
             auth.authenticate();
-        });
-    </script>
-    
-        // 主功能脚本（原main.js的内容）
-        document.addEventListener('DOMContentLoaded', () => {
-            // 初始化日期显示
-            updateDateTime();
-            setInterval(updateDateTime, 60000); // 每分钟更新一次
             
-            // 添加一些交互效果
+            // 2. 初始化日期显示
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+            
+            // 3. 添加交互效果
             addHoverEffects();
         });
 
+        // 日期更新函数
         function updateDateTime() {
             const now = new Date();
             const options = {
@@ -282,8 +280,8 @@ async authenticate() {
             }
         }
 
+        // 按钮特效函数
         function addHoverEffects() {
-            // 为按钮添加涟漪效果
             const buttons = document.querySelectorAll('button');
             buttons.forEach(button => {
                 button.addEventListener('click', function(e) {
