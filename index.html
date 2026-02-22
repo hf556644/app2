@@ -104,225 +104,99 @@ body {
     
     <!-- 注意：这里引用app2目录下的auth.js，而不是根目录的 -->
     <script>
-        // 认证逻辑
-        class AuthSystem {
-            constructor() {
-                this.config = null;
-                this.currentToken = this.getTokenFromURL();
-                this.attempts = 0;
-                this.maxAttempts = 3;
-            }
-
-            // 从URL获取token
-            getTokenFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                return params.get('token') || params.get('t');
-            }
-
-            // 获取当前月份（两位数字，如01、02）
-            getCurrentMonth() {
-                const now = new Date();
-                const month = now.getMonth() + 1;
-                return month.toString().padStart(2, '0');
-            }
-
-            // 加载配置
-            async loadConfig() {
-                try {
-                   const response = await fetch('config.json');
-                    this.config = await response.json();
-                    return true;
-                } catch (error) {
-                    console.error('加载配置失败:', error);
-                    return false;
-                }
-            }
-
-            // 验证token
-            async validateToken() {
-                if (!this.currentToken) {
-                    throw new Error('缺少访问令牌');
-                }
-
-                if (!await this.loadConfig()) {
-                    throw new Error('系统配置加载失败');
-                }
-
-                // 获取当前月份
-                const currentMonth = this.getCurrentMonth();
-                
-                // 检查当前月份是否有对应的令牌
-                if (!this.config.tokens || !this.config.tokens[currentMonth]) {
-                    throw new Error('本月暂无有效访问令牌，请联系管理员');
-                }
-
-                // 验证token是否匹配
-                const monthToken = this.config.tokens[currentMonth];
-                
-                if (this.currentToken !== monthToken) {
-                    this.attempts++;
-                    if (this.attempts >= this.maxAttempts) {
-                        throw new Error('验证失败次数过多，请重新扫描二维码');
-                    }
-                    throw new Error(`无效的访问令牌 (尝试 ${this.attempts}/${this.maxAttempts})`);
-                }
-
-                return true;
-            }
-
-            // 更新页面信息
-            updatePageInfo() {
-                if (!this.config) return;
-                
-                const currentMonth = this.getCurrentMonth();
-                const expiry = new Date(new Date().getFullYear(), parseInt(currentMonth), 0); // 当月最后一天
-                
-                const currentDate = document.getElementById('current-date');
-                const expiryDate = document.getElementById('expiry-date');
-                const tokenMonth = document.getElementById('token-month');
-                
-                if (currentDate) {
-                    currentDate.textContent = new Date().toLocaleDateString('zh-CN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                }
-                
-                if (expiryDate) {
-                    expiryDate.textContent = expiry.toLocaleDateString('zh-CN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                }
-                
-                if (tokenMonth) {
-                    tokenMonth.textContent = expiry.toLocaleDateString('zh-CN', { month: 'long', year: 'numeric' });
-                }
-            }
-
-            // 主验证流程
-console.log('开始验证，当前按钮状态:', document.getElementById('enterSystemBtn'))
-async authenticate() {
+// 页面加载后直接执行
+(function() {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const error = document.getElementById('error');
-    const enterBtn = document.getElementById('enterSystemBtn');  // 获取按钮
-
-    try {
-        await this.validateToken();
-        
-        // 验证成功
-        if (loading) loading.classList.add('hidden');
-        this.updatePageInfo();
-        if (content) content.classList.remove('hidden');
-        if (error) error.classList.add('hidden');
-        
-        // 显示进入系统按钮（直接操作style）
-        if (enterBtn) {
-            enterBtn.style.display = 'inline-block';
-            console.log('按钮已显示');  // 可以在控制台查看
-        }
-        
-        // 记录访问日志
-        this.logAccess();
-        
-    } catch (errorMsg) {
-        // 验证失败
-        if (loading) loading.classList.add('hidden');
-        if (content) content.classList.add('hidden');
-        
-        // 隐藏进入系统按钮
-        if (enterBtn) {
-            enterBtn.style.display = 'none';
-            console.log('按钮已隐藏');
-        }
-        
-        const errorMessage = document.getElementById('error-message');
-        if (errorMessage) errorMessage.textContent = errorMsg;
-        if (error) error.classList.remove('hidden');
-    }
-}
-
-                // 页面加载时启动所有功能
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. 启动验证
-            const auth = new AuthSystem();
-            auth.authenticate();
-            
-            // 2. 初始化日期显示
-            updateDateTime();
-            setInterval(updateDateTime, 60000);
-            
-            // 3. 添加交互效果
-            addHoverEffects();
-        });
-
-        // 日期更新函数
-        function updateDateTime() {
+    const errorMsg = document.getElementById('error-message');
+    const btn = document.getElementById('enterSystemBtn');
+    
+    const urlToken = new URLSearchParams(location.search).get('token');
+    console.log('URL令牌:', urlToken);
+    
+    fetch('config.json')
+        .then(r => r.json())
+        .then(config => {
             const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            const dateTimeStr = now.toLocaleDateString('zh-CN', options);
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const correctToken = config.tokens[month];
+            console.log('当前月份:', month, '正确令牌:', correctToken);
             
-            const dateElement = document.getElementById('current-date');
-            if (dateElement) {
-                dateElement.textContent = dateTimeStr;
+            if (urlToken && urlToken === correctToken) {
+                // 验证成功
+                loading.classList.add('hidden');
+                content.classList.remove('hidden');
+                error.classList.add('hidden');
+                
+                // 更新有效期
+                const expiryDate = new Date(now.getFullYear(), parseInt(month), 0);
+                document.getElementById('expiry-date').textContent = 
+                    expiryDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('token-month').textContent = 
+                    expiryDate.toLocaleDateString('zh-CN', { month: 'long', year: 'numeric' });
+                document.getElementById('current-date').textContent = 
+                    now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                
+                if (btn) btn.style.display = 'inline-block';
+                console.log('验证成功！');
+            } else {
+                throw new Error('无效的访问令牌');
             }
-        }
+        })
+        .catch(err => {
+            loading.classList.add('hidden');
+            content.classList.add('hidden');
+            error.classList.remove('hidden');
+            errorMsg.textContent = err.message || '系统配置加载失败';
+            console.error('错误:', err);
+        });
+})();
 
-        // 按钮特效函数
-        function addHoverEffects() {
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    const ripple = document.createElement('span');
-                    const rect = this.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-                    
-                    ripple.style.cssText = `
-                        position: absolute;
-                        border-radius: 50%;
-                        background: rgba(255, 255, 255, 0.7);
-                        transform: scale(0);
-                        animation: ripple 0.6s linear;
-                        width: ${size}px;
-                        height: ${size}px;
-                        left: ${x}px;
-                        top: ${y}px;
-                    `;
-                    
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
-                });
-            });
-        }
+// 日期更新功能
+setInterval(() => {
+    const el = document.getElementById('current-date');
+    if (el) {
+        el.textContent = new Date().toLocaleDateString('zh-CN', {
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+}, 60000);
 
-        // 添加CSS动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
+// 按钮特效（可选）
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
         `;
-        document.head.appendChild(style);
-    </script>
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// 添加CSS动画
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple {
+        to { transform: scale(4); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+</script>
 </body>
 </html>
