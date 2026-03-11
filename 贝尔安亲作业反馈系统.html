@@ -1146,20 +1146,33 @@ X
                     
                     feedback += `\n💪 建议\n`;
                     
-                    // 第一条建议（已修改）
-                    feedback += `   1. 典型错题会收录到贝尔安亲错题宝，方便日后定期复习，针对性巩固。\n`;
+                    // 收集所有建议内容
+                    let suggestions = [];
                     
-                    // 第二条建议：根据各科错题数给出建议
+                    // 第一条建议
+                    suggestions.push('典型错题会收录到贝尔安亲错题宝，方便日后定期复习，针对性巩固。');
+                    
+                    // 根据各科错题数给出建议
                     Object.keys(subjectErrorCounts).forEach(subject => {
                         const count = subjectErrorCounts[subject];
                         if (count > 5) {
-                            feedback += `   2. ${subject}今日错题总数${count}道，重点关注\n`;
+                            suggestions.push(`${subject}今日错题总数${count}道，重点关注`);
                         }
                     });
                     
-                    // 第三条建议：如果选择了课堂效率相关评语
+                    // 如果选择了课堂效率相关评语
                     if (hasClassroomEfficiencyComments) {
-                        feedback += `   3. 请关注孩子在学校的课堂效率\n`;
+                        suggestions.push('请关注孩子在学校的课堂效率');
+                    }
+                    
+                    // 生成建议：如果只有一条，不加序号；多于一条则加字母序号
+                    if (suggestions.length === 1) {
+                        feedback += `   ${suggestions[0]}\n`;
+                    } else {
+                        suggestions.forEach((suggestion, index) => {
+                            const letter = String.fromCharCode(97 + index); // a, b, c...
+                            feedback += `   ${letter}. ${suggestion}\n`;
+                        });
                     }
                     
                     feedback += `\n────────────\n`;
