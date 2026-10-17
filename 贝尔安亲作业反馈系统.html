@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>贝尔安亲作业反馈系统</title>
-          <script>
-    // 检查网址中是否包含 token 参数
+             <script>
+    // 判断网址里有没有 token=
     if (window.location.href.indexOf('token=') === -1) {
-        // 1. 利用 document.write 写入一个新页面覆盖原页面
-        document.write('<style>body { display: none !important; }</style>');
-        document.write('<div style="text-align:center; margin-top:100px; font-family:sans-serif;"><h1 style="color:#e53e3e;">🔒 访问受限</h1><p style="font-size:18px; color:#555;">请扫描当月最新二维码访问</p><p style="color:#999;">直接保存的链接已失效</p></div>');
-        
-        // 2. 强行停止浏览器继续加载原网页内容
-        window.stop();
+        // 监听页面内容加载完成事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等页面加载完，直接清空原内容，换成拦截提示
+            document.body.innerHTML = '<div style="text-align:center; margin-top:100px; font-family:sans-serif;"><h1 style="color:#e53e3e; font-size:28px;">🔒 访问受限</h1><p style="font-size:18px; color:#555; margin-top:20px;">请扫描当月最新二维码访问</p><p style="color:#999; margin-top:10px;">直接保存的链接已失效</p></div>';
+            document.body.style.background = '#f0f2f5'; // 统一背景色
+        });
     }
     </script>
     <style>
