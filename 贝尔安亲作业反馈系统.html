@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>贝尔安亲作业反馈系统</title>
+    <script>
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    if (!params.get('token')) {
+        document.documentElement.innerHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>访问受限</title><style>body{text-align:center;padding:50px;font-family:sans-serif}h1{color:#e53e3e}</style></head><body><h1>🔒 访问受限</h1><p>请扫描当月最新二维码访问</p><p>直接保存的链接已失效</p></body></html>';
+        throw new Error('no token');
+    }
+})();
+</script>
     <style>
         * {
             box-sizing: border-box;
