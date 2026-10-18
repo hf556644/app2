@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>贝尔安亲作业反馈系统</title>
-             <script>
-    // 判断网址里有没有 token=
-    if (window.location.href.indexOf('token=') === -1) {
-        // 监听页面内容加载完成事件
-        document.addEventListener('DOMContentLoaded', function() {
-            // 等页面加载完，直接清空原内容，换成拦截提示
-            document.body.innerHTML = '<div style="text-align:center; margin-top:100px; font-family:sans-serif;"><h1 style="color:#e53e3e; font-size:28px;">🔒 访问受限</h1><p style="font-size:18px; color:#555; margin-top:20px;">请扫描当月最新二维码访问</p><p style="color:#999; margin-top:10px;">直接保存的链接已失效</p></div>';
-            document.body.style.background = '#f0f2f5'; // 统一背景色
-        });
-    }
+                 <script>
+    (function() {
+        var currentUrl = window.location.href;
+        var urlParams = new URLSearchParams(window.location.search);
+        var hasToken = urlParams.has('token');
+
+        // 判断如果没有 token 参数，则执行拦截
+        if (!hasToken) {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.innerHTML = `
+                    <div style="text-align:center; margin-top:100px; font-family:sans-serif; padding: 20px;">
+                        <h1 style="color:#e53e3e; font-size:28px;">🔒 访问受限</h1>
+                        <p style="font-size:18px; color:#555; margin-top:20px;">请扫描当月最新二维码访问</p>
+                        <p style="color:#999; margin-top:10px;">直接保存的链接已失效</p>
+                        <div style="margin-top: 30px; padding: 10px; background: #fff; border: 1px dashed #ccc; word-break: break-all; font-size: 12px; color: #888;">
+                            <p>（调试信息）当前浏览器拿到的网址：</p>
+                            <p>${currentUrl}</p>
+                        </div>
+                    </div>
+                `;
+                document.body.style.background = '#f0f2f5';
+            });
+        }
+    })();
     </script>
     <style>
         * {
